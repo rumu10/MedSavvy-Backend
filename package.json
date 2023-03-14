@@ -1,0 +1,46 @@
+{
+  "name": "node-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "env-cmd -f .env.development nodemon ./src/server.js --exec babel-node",
+    "start:stage:dev": "env-cmd -f .env.development nodemon ./src/server.js --exec babel-node",
+    "start:stage:stageDev": "env-cmd -f .env.development babel-node ./src/server.js",
+    "start:stage:stage": "env-cmd -f .env.staging babel-node ./src/server.js",
+    "start:stage:stageLocal": "env-cmd -f .env.staging nodemon ./src/server.js --exec babel-node",
+    "start:stage:prod": "env-cmd -f .env.production babel-node ./src/server.js",
+    "start:stage:prodLocal": "env-cmd -f .env.production nodemon ./src/server.js --exec babel-node"
+  },
+  "author": "Rumu",
+  "license": "ISC",
+  "dependencies": {
+    "archiver": "^5.3.1",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "buffers": "^0.1.1",
+    "cors": "^2.8.5",
+    "csv-parser": "^3.0.0",
+    "dayjs": "^1.11.4",
+    "env-cmd": "^10.1.0",
+    "exceljs": "^4.3.0",
+    "express": "^4.18.1",
+    "fast-csv": "^4.3.6",
+    "git-commit-msg-linter": "^3.2.8",
+    "helmet": "^4.6.0",
+    "joi": "^17.4.2",
+    "jsonwebtoken": "^8.5.1",
+    "mailcomposer": "^4.0.2",
+    "moment": "^2.29.1",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "oracledb": "^5.5.0",
+    "sequelize": "^6.6.5"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
