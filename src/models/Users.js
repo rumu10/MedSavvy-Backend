@@ -18,7 +18,7 @@ const  users = sequelize.define(
     },
   },
   {
-    // schema: process.env.schema,
+    schema: process.env.schema,
     timestamps: true,
   }
 );
