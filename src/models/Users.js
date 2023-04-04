@@ -1,26 +1,31 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/Database';
+import { DataTypes, literal } from "sequelize";
+import Sequelize from "../config/Database";
 
-const { INTEGER, DATE } = DataTypes
+const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE } = DataTypes;
 
-const  users = sequelize.define(
-  "users",
-  {
-    ID: {
-      type: DataTypes.INTEGER,  // maps to INTEGER
-      autoIncrement: true,      // automatically increment the value
-      primaryKey: true,         // this is the table's primary key
-      allowNull: false,         // value cannot be null
-    },
-    NAME: {
-      type: DataTypes.STRING,   // maps to VARCHAR2
-      allowNull: false,         // value cannot be null
-    },
+const users = Sequelize.define('users', {
+  "username": STRING,
+  "name": STRING,
+  "position": STRING,
+  "email": STRING,
+  "phone_number": STRING,
+  "pass": STRING,
+  // "active": BOOLEAN,
+  // "delete_marker": BOOLEAN,
+  created_at: {
+    type: "TIMESTAMP",
+    defaultValue: literal("CURRENT_TIMESTAMP"),
   },
-  {
-    schema: process.env.schema,
-    timestamps: true,
-  }
-);
+  updated_at: {
+    type: "TIMESTAMP",
+    defaultValue: literal("CURRENT_TIMESTAMP"),
+  },
+},
+{
+  timestamps: true,
+  createdAt: "created_at",
+  updatedAt: "updated_at",
+  schema: process.env.schema,
+});
 
 export default users;
