@@ -3,13 +3,10 @@ import Sequelize from "../config/Database";
 
 const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE } = DataTypes;
 
-const users = Sequelize.define('users', {
-  "username": STRING,
-  "u_name": STRING,
-  "u_position": STRING,
-  "email": STRING,
-  "phone_number": STRING,
-  "pass": STRING,
+const questions = Sequelize.define('questions', {
+  "q_text": STRING,
+  "camp_id": INTEGER,
+  
   // "active": BOOLEAN,
   // "delete_marker": BOOLEAN,
   created_at: {
@@ -28,4 +25,4 @@ const users = Sequelize.define('users', {
   schema: process.env.schema,
 });
 
-export default users;
+export default questions;

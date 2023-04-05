@@ -1,15 +1,13 @@
 import { DataTypes, literal } from "sequelize";
 import Sequelize from "../config/Database";
 
-const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE } = DataTypes;
+const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE ,FLOAT } = DataTypes;
 
-const users = Sequelize.define('users', {
-  "username": STRING,
-  "u_name": STRING,
-  "u_position": STRING,
-  "email": STRING,
-  "phone_number": STRING,
-  "pass": STRING,
+const products = Sequelize.define('products', {
+  "prod_name": STRING,
+  "prod_category": STRING,
+  "price": FLOAT,
+ 
   // "active": BOOLEAN,
   // "delete_marker": BOOLEAN,
   created_at: {
@@ -28,4 +26,4 @@ const users = Sequelize.define('users', {
   schema: process.env.schema,
 });
 
-export default users;
+export default products;
