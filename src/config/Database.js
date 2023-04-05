@@ -13,7 +13,9 @@ const sequelize = new Sequelize(process.env.Db_Name, null, null, {
   host: process.env.host,
   username: process.env.Db_user,
   password: process.env.Db_pass,
-
+  dialectOptions: {
+    ssl: true
+  },
   logging: false,
   pool: {
     max: 30,

@@ -10,8 +10,8 @@ const users = Sequelize.define('users', {
   "email": STRING,
   "phone_number": STRING,
   "pass": STRING,
-  // "active": BOOLEAN,
-  // "delete_marker": BOOLEAN,
+  "active_status": BOOLEAN,
+  "delete_marker": BOOLEAN,
   created_at: {
     type: "TIMESTAMP",
     defaultValue: literal("CURRENT_TIMESTAMP"),

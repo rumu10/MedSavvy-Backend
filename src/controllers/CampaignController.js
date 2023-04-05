@@ -10,42 +10,29 @@ const SUCCESS = 200;
 const ERROR = 500;
 
 
-export const userList = async (req, res, next) => {
+export const campaignList = async (req, res, next) => {
   try {
-    const users = await sequelize.query(
+    const camps = await sequelize.query(
       ` 
       SELECT 
-      u.id, 
-      u.name,
-      u.username,
-      u.position, 
-      r.role_name,
-      u.phone_number,
-      u.email
+     *
     FROM 
-      medsavvy.users u,
-    medsavvy.role_user_maps rum,
-     medsavvy.roles r
-    WHERE
- 
-      u.id = rum.user_id AND 
-      r.id = rum.role_id AND
-      u.delete_marker = false
+      medsavvy.campaigns
          
        `,
       {
         type: QueryTypes.SELECT,
       }
     );
-    console.log(users)
-    SendResponse(res, 'Success', users);
+    console.log(camps)
+    SendResponse(res, 'Success', camps);
   } catch (error) {
     // sendSentryError(error, "assignVaToCampaign");
     return res.status(ERROR).json({ ques: [], message: error.message });
   }
 }
 
-export const getRoleList = async (req, res, next) => {
+export const getTypeList = async (req, res, next) => {
 
   try {
     const role_list = await roles.findAll({});
@@ -57,7 +44,7 @@ export const getRoleList = async (req, res, next) => {
 };
 
 
-export const createUser = async (req, res, next) => {
+export const createCampaign = async (req, res, next) => {
   const { name, email, username, phone_number, position, role_id, pass } =
     req.body;
   var salt = bcrypt.genSaltSync(10);
@@ -110,7 +97,7 @@ export const createUser = async (req, res, next) => {
 };
 
 
-export const deleteUser = async (req, res, next) => {
+export const deleteCampaign = async (req, res, next) => {
   console.log(req.body)
   const id = req.body.id;
   const transaction = await sequelize.transaction();
