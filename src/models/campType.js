@@ -4,7 +4,7 @@ import Sequelize from "../config/Database";
 const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE } = DataTypes;
 
 const campType = Sequelize.define(
-  "campType",
+  "camp_types",
   {
     type_name: STRING,
 

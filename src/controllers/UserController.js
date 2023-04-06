@@ -111,9 +111,9 @@ export const createUser = async (req, res, next) => {
 
 
 export const deleteUser = async (req, res, next) => {
-  console.log(req.body)
   const id = req.body.id;
   const transaction = await sequelize.transaction();
+  console.log(id)
   try {
     const user = await users.update({
       delete_marker: true
@@ -140,6 +140,87 @@ export const deleteUser = async (req, res, next) => {
       error.statusCode = 500;
     }
     return next(error);
+  }
+};
+
+export const updateUser = async (req, res, next) => {
+  const { name, email, username, phone_number, position, role_id } =
+    req.body;
+    console.log(req.body)
+  const transaction = await sequelize.transaction();
+  try {
+    const user = await users.update({
+      name,
+      username,
+      position,
+      email,
+      phone_number
+    },
+    {
+      where: { id: +req.body.id }
+    },
+      {
+        transaction: transaction,
+      }
+    );
+
+    const roleuser = await RoleuserMaps.update({
+      role_id,
+    },
+    {
+      where: { user_id: +req.body.id }
+    },
+      {
+        transaction: transaction,
+      }
+    );
+
+
+    await transaction.commit();
+    return SendResponse(res, "Successful", user);
+  } catch (error) {
+    console.log(error)
+    await transaction.rollback();
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    return next(error);
+  }
+};
+
+export const getUser = async (req, res, next) => {
+  try {
+    const user = await sequelize.query(
+      ` 
+      SELECT 
+      u.id, 
+      u.name,
+      u.username,
+      u.position, 
+      r.role_name,
+      r.id role_id,
+      u.phone_number,
+      u.email
+    FROM 
+      medsavvy.users u,
+    medsavvy.role_user_maps rum,
+     medsavvy.roles r
+    WHERE
+ 
+      u.id = rum.user_id AND 
+      r.id = rum.role_id AND
+      u.delete_marker = false and
+      u.id =${req.params.id}
+         
+       `,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
+    SendResponse(res, 'Success', user);
+  } catch (error) {
+    console.log(error)
+    next(error);
   }
 };
 

@@ -4,12 +4,12 @@ import Sequelize from "../config/Database";
 const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE } = DataTypes;
 
 const campaigns = Sequelize.define(
-  "campaign",
+  "campaigns",
   {
     camp_name: STRING,
-    camp_type: STRING,
     start_date: Date,
     end_date: Date,
+    survey_target: INTEGER,
     
     created_at: {
       type: "TIMESTAMP",

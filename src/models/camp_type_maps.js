@@ -4,12 +4,10 @@ import Sequelize from "../config/Database";
 const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE } = DataTypes;
 
 const campTypeMaps = Sequelize.define(
-  "address",
+  "camp_type_maps",
   {
-    state: STRING,
-    city: STRING,
-    zipcode: INTEGER,
-
+    cam_id: INTEGER,
+    type_id: INTEGER,
     // "active": BOOLEAN,
     // "delete_marker": BOOLEAN,
     created_at: {
@@ -29,4 +27,4 @@ const campTypeMaps = Sequelize.define(
   }
 );
 
-export default address;
+export default campTypeMaps;

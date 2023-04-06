@@ -5,6 +5,11 @@ import roles from "../models/Roles";
 import users from "../models/Users";
 import SendResponse from "../utils/responses/SendResponse";
 import RoleuserMaps from "../models/RoleUserMaps";
+import campType from "../models/campType";
+import campTypeMaps from "../models/camp_type_maps";
+import campaigns from "../models/Campaign";
+import Questions from "../models/questions";
+import Options from "../models/options";
 
 const SUCCESS = 200;
 const ERROR = 500;
@@ -15,9 +20,14 @@ export const campaignList = async (req, res, next) => {
     const camps = await sequelize.query(
       ` 
       SELECT 
-     *
-    FROM 
-      medsavvy.campaigns
+      c.*, ct.type_name 
+     FROM 
+       medsavvy.campaigns c,
+       medsavvy.camp_type_maps ctm,
+       medsavvy.camp_types ct 
+       where 
+       c.id = ctm.cam_id 
+       and ct.id = ctm.type_id 
          
        `,
       {
@@ -35,7 +45,7 @@ export const campaignList = async (req, res, next) => {
 export const getTypeList = async (req, res, next) => {
 
   try {
-    const role_list = await roles.findAll({});
+    const role_list = await campType.findAll({});
     SendResponse(res, 'Success', role_list);
   } catch (error) {
     // sendSentryError(error, "getConfig");
@@ -45,20 +55,16 @@ export const getTypeList = async (req, res, next) => {
 
 
 export const createCampaign = async (req, res, next) => {
-  const { name, email, username, phone_number, position, role_id, pass } =
+  const { camp_name, end_date, start_date, survey_target, type } =
     req.body;
-  var salt = bcrypt.genSaltSync(10);
-  var hashpass = bcrypt.hashSync(pass, salt);
+
   const transaction = await sequelize.transaction();
-  console.log(hashpass)
   try {
-    const user = await users.create({
-      name,
-      username,
-      position,
-      email,
-      phone_number,
-      pass: hashpass
+    const user = await campaigns.create({
+      camp_name,
+      end_date,
+      start_date,
+      survey_target
     },
       {
         transaction: transaction,
@@ -73,9 +79,9 @@ export const createCampaign = async (req, res, next) => {
       throw error;
     }
     console.log(user.id)
-    const roleuser = await RoleuserMaps.create({
-      role_id,
-      user_id: user.id
+    const roleuser = await campTypeMaps.create({
+      cam_id: user.id,
+      type_id: type
 
     },
       {
@@ -128,5 +134,118 @@ export const deleteCampaign = async (req, res, next) => {
     }
     return next(error);
   }
+};
+
+export const getQuestion = async (req, res, next) => {
+  console.log("get", req.params);
+  try {
+    const { campaignID } = req.params;
+
+    const ques = await Questions.findAll({
+      where: { camp_id: campaignID, is_deleted: 0 },
+      include: [
+        {
+          attributes: ["id", "option_text"],
+          model: Options,
+          required: true,
+        },
+      ],
+    });
+    return SendResponse(res, "Successful", ques);
+  } catch (error) {
+    console.log(error);
+    return next(error);
+  }
+};
+
+export const createQuestion = async (req, res, next) => {
+  // console.log(req.body);
+  const transaction = await sequelize.transaction();
+  try {
+    const { campaign, questions } = req.body;
+
+    // Questions
+    for (let i = 0; i < questions.length; i++) {
+      const { id, isMulti, options, ques, status } = questions[i];
+      if (status === "removed") {
+        await Questions.update(
+          {
+            is_deleted: 1,
+          },
+          {
+            where: {
+              id,
+            },
+          },
+          {
+            transaction: transaction,
+          }
+        );
+      } else if (status === "modify") {
+        let QusInfo = await Questions.update(
+          {
+            is_deleted: 1,
+          },
+          {
+            where: {
+              id,
+            },
+          },
+          {
+            transaction: transaction,
+          }
+        );
+
+        QusInfo = await Questions.create(
+          {
+            camp_id: campaign,
+            is_deleted: 0,
+            q_text: ques,
+            isMultipleAns: isMulti,
+          },
+          {
+            transaction: transaction,
+          }
+        );
+
+        await ModifyOrCreateQusOptions(QusInfo.id, options, transaction);
+      } else if (status === "new") {
+        let QusInfo = await Questions.create(
+          {
+            camp_id: campaign,
+            is_deleted: 0,
+            q_text: ques,
+            isMultipleAns: isMulti,
+          },
+          {
+            transaction: transaction,
+          }
+        );
+
+        await ModifyOrCreateQusOptions(QusInfo.id, options, transaction);
+      }
+    }
+    await transaction.commit();
+    res.status(200).json({ message: "Saved successfully" });
+  } catch (error) {
+    console.log(error)
+    await transaction.rollback();
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+const ModifyOrCreateQusOptions = async (ques_id, options, transaction) => {
+  const bulkData = [];
+  for (let i = 0; i < options.length; i++) {
+    const { option } = options[i];
+    bulkData.push({
+      quest_id: ques_id,
+      option_text: option,
+    });
+  }
+
+  await Options.bulkCreate(bulkData, {
+    transaction: transaction,
+  });
 };
 

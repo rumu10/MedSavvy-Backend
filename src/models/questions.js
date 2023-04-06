@@ -1,12 +1,14 @@
 import { DataTypes, literal } from "sequelize";
 import Sequelize from "../config/Database";
+import Options from "./options";
 
 const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE } = DataTypes;
 
-const questions = Sequelize.define('questions', {
+const Questions = Sequelize.define('questions', {
   "q_text": STRING,
   "camp_id": INTEGER,
-  
+  isMultipleAns: INTEGER,
+  is_deleted: INTEGER,
   // "active": BOOLEAN,
   // "delete_marker": BOOLEAN,
   created_at: {
@@ -25,4 +27,6 @@ const questions = Sequelize.define('questions', {
   schema: process.env.schema,
 });
 
-export default questions;
+Questions.hasMany(Options, { foreignKey: "quest_id" });
+
+export default Questions;

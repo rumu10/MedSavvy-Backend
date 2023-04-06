@@ -5,8 +5,8 @@ const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE } = DataTypes;
 
 const users = Sequelize.define('users', {
   "username": STRING,
-  "u_name": STRING,
-  "u_position": STRING,
+  name: STRING,
+  "position": STRING,
   "email": STRING,
   "phone_number": STRING,
   "pass": STRING,

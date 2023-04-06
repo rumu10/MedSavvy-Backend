@@ -6,8 +6,7 @@ const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE } = DataTypes;
 const options = Sequelize.define('options', {
   "option_text": STRING,
   "quest_id": INTEGER,
-  
-  
+
   // "active": BOOLEAN,
   // "delete_marker": BOOLEAN,
   created_at: {
