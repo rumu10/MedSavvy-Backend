@@ -313,3 +313,50 @@ export const getRole = async (req, res, next) => {
   }
 };
 
+export const updateRole = async (req, res, next) => {
+  const { roleid, role_name, role_description, permission_page } =
+    req.body;
+
+    console.log(roleid);
+
+  const transaction = await sequelize.transaction();
+  try {
+    const role = await roles.update({
+      role_name, role_description
+    },
+    {
+      where: { id: roleid }
+    },
+      {
+        transaction: transaction,
+      }
+    );
+
+    const roleuser = await RolePermissionMaps.destroy({
+      where: { role_id: roleid },
+      transaction: transaction,
+    });
+
+    const bulkData = [];
+    for (let i = 0; i < permission_page.length; i++) {
+      bulkData.push({
+        role_id: roleid,
+        permission_id: permission_page[i],
+      });
+    }
+
+    await RolePermissionMaps.bulkCreate(bulkData, {
+      transaction: transaction,
+    });
+
+    await transaction.commit();
+    return SendResponse(res, "Successful", role);
+  } catch (error) {
+    console.log(error)
+    await transaction.rollback();
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    return next(error);
+  }
+};

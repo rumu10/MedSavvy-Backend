@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { accessList, createRole, createUser, deleteUser, getRole, getRoleList, getUser, updateUser, userList } from "../controllers/UserController";
+import { accessList, createRole, createUser, deleteUser, getRole, getRoleList, getUser, updateRole, updateUser, userList } from "../controllers/UserController";
 import AuthorizedUser from "../middlewares/AuthorizedUser";
 
 
@@ -17,5 +17,6 @@ router.post('/update', updateUser);
 router.get('/role-access-list', accessList);
 router.post('/role-create', createRole);
 router.get('/getRole/:id', getRole);
+router.post('/update-role', updateRole);
 
 export default router;
