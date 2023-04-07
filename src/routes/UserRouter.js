@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser, deleteUser, getRoleList, getUser, updateUser, userList } from "../controllers/UserController";
+import { accessList, createRole, createUser, deleteUser, getRole, getRoleList, getUser, updateUser, userList } from "../controllers/UserController";
 import AuthorizedUser from "../middlewares/AuthorizedUser";
 
 
@@ -14,6 +14,8 @@ router.post('/create', createUser);
 router.patch('/delete-user', deleteUser);
 router.get('/getUser/:id', getUser);
 router.post('/update', updateUser);
-
+router.get('/role-access-list', accessList);
+router.post('/role-create', createRole);
+router.get('/getRole/:id', getRole);
 
 export default router;
