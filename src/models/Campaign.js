@@ -10,7 +10,7 @@ const campaigns = Sequelize.define(
     start_date: Date,
     end_date: Date,
     survey_target: INTEGER,
-    
+    "delete_marker": BOOLEAN,
     created_at: {
       type: "TIMESTAMP",
       defaultValue: literal("CURRENT_TIMESTAMP"),
