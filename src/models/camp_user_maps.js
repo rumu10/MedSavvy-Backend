@@ -3,14 +3,12 @@ import Sequelize from "../config/Database";
 
 const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE } = DataTypes;
 
-const cutomers = Sequelize.define(
-  "customers",
+const camp_user_maps = Sequelize.define(
+  "address",
   {
-    cutomer_name: STRING,
-    customer_age: INTEGER,
-    email : STRING,
-    profession: STRING,
-
+    id: INTEGER,
+    user_id: STRING,
+    camp_id: INTEGER,
 
     // "active": BOOLEAN,
     // "delete_marker": BOOLEAN,
@@ -31,4 +29,4 @@ const cutomers = Sequelize.define(
   }
 );
 
-export default customers;
+export default address;
