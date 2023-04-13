@@ -28,6 +28,7 @@ export const campaignList = async (req, res, next) => {
        where 
        c.id = ctm.cam_id 
        and ct.id = ctm.type_id 
+       and c.delete_marker = false
          
        `,
       {
@@ -108,7 +109,7 @@ export const deleteCampaign = async (req, res, next) => {
   const id = req.body.id;
   const transaction = await sequelize.transaction();
   try {
-    const user = await users.update({
+    const user = await campaigns.update({
       delete_marker: true
     },
       {
@@ -119,10 +120,10 @@ export const deleteCampaign = async (req, res, next) => {
       }
     );
 
-    const roleuser = await RoleuserMaps.destroy({
-      where: { user_id: id },
-      transaction: transaction,
-    });
+    // const roleuser = await RoleuserMaps.destroy({
+    //   where: { user_id: id },
+    //   transaction: transaction,
+    // });
 
     await transaction.commit();
     return SendResponse(res, "Successful", user);

@@ -360,3 +360,33 @@ export const updateRole = async (req, res, next) => {
     return next(error);
   }
 };
+
+export const updateCampaign = async (req, res, next) => {
+  const { roleid, role_name, role_description, permission_page } =
+    req.body;
+
+    console.log(roleid);
+
+  const transaction = await sequelize.transaction();
+  try {
+    const role = await roles.update({
+      role_name, role_description
+    },
+    {
+      where: { id: roleid }
+    },
+      {
+        transaction: transaction,
+      }
+    );
+    await transaction.commit();
+    return SendResponse(res, "Successful", role);
+  } catch (error) {
+    console.log(error)
+    await transaction.rollback();
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    return next(error);
+  }
+};
