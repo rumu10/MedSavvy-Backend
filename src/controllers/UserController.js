@@ -21,6 +21,7 @@ export const userList = async (req, res, next) => {
       u.name,
       u.username,
       u.position, 
+      r.id role_id,
       r.role_name,
       u.phone_number,
       u.email

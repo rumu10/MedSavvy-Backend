@@ -4,7 +4,7 @@ import { QueryTypes, Op } from "sequelize";
 import db from "../config/Database";
 import CreateJWT from "../utils/CreateJWT";
 import SendResponse from "../utils/responses/SendResponse";
-
+import { exec } from "child_process";
 
 
 export const SignInWeb = async (req, res, next) => {
@@ -80,7 +80,7 @@ export const SignInWeb = async (req, res, next) => {
   const isEqual = await bcrypt.compare(password, UserInfo[0].pass);
   console.log(isEqual);
 
-  if(isEqual){
+  if (isEqual) {
     req.user = {
       id,
       username,
@@ -105,6 +105,21 @@ export const SignInWeb = async (req, res, next) => {
     return next(error);
   }
 
-  
+
 };
+
+
+export const sendEmail = async (req, res, next) => {
+  exec(`py C:/emailTest/emailer.py passwordResetEmail ${req.body.email} http://localhost:3000/reset-password`, (error, stdout, stderr) => {
+    if (error) {
+      console.log(`error: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      // console.log(`stderr: ${stderr}`);
+      return;
+    }
+    SendResponse(res, 'Success', 'sent');
+  });
+}
 

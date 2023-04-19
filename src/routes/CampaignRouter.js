@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { campaignList, createCampaign, createQuestion, deleteCampaign, getQuestion, getTypeList } from "../controllers/CampaignController";
+import { ByUserSurveyCount, campaignList, createCampaign, createQuestion, deleteCampaign, getAssignedCampaigns, getCampaignName, getQuestion, getSpList, getSurveyQuestions, getTypeList, saveSurvey } from "../controllers/CampaignController";
 import { updateCampaign } from "../controllers/UserController";
 import AuthorizedUser from "../middlewares/AuthorizedUser";
 
@@ -16,6 +16,12 @@ router.patch('/delete-campaign', deleteCampaign);
 router.patch('/update-campaign', updateCampaign);
 router.get("/get-questions/:campaignID", getQuestion);
 router.post('/create-questions', createQuestion);
+router.post('/spList', getSpList);
+router.post("/assigned-campaings", getAssignedCampaigns);
+router.post("/get-survey", getSurveyQuestions);
+router.post("/get-name", getCampaignName);
+router.post("/save-survey", saveSurvey);
+router.post("/total-survey-by-user", ByUserSurveyCount);
 
 
 export default router;

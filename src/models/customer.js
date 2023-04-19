@@ -3,12 +3,16 @@ import Sequelize from "../config/Database";
 
 const { STRING, TEXT, INTEGER, ARRAY, BOOLEAN, DATE } = DataTypes;
 
-const cutomers = Sequelize.define(
+const customers = Sequelize.define(
   "customers",
   {
-    cutomer_name: STRING,
+    customer_name: STRING,
     customer_age: INTEGER,
-
+    profession: STRING,
+    email: STRING,
+    camp_id: INTEGER,
+    survey_by: INTEGER,
+    survey_date: DATE,
     // "active": BOOLEAN,
     // "delete_marker": BOOLEAN,
     created_at: {
