@@ -13,6 +13,7 @@ const ERROR = 500;
 
 
 export const userList = async (req, res, next) => {
+  console.log(req.user)
   try {
     const users = await sequelize.query(
       ` 
@@ -40,7 +41,29 @@ export const userList = async (req, res, next) => {
         type: QueryTypes.SELECT,
       }
     );
-    console.log(users)
+    SendResponse(res, 'Success', users);
+  } catch (error) {
+    // sendSentryError(error, "assignVaToCampaign");
+    return res.status(ERROR).json({ ques: [], message: error.message });
+  }
+}
+
+export const allUserList = async (req, res, next) => {
+  console.log(req.user)
+  try {
+    const users = await sequelize.query(
+      ` 
+      SELECT 
+      u.id, 
+      u.username,
+      u.email
+    FROM 
+      medsavvy.users u   
+       `,
+      {
+        type: QueryTypes.SELECT,
+      }
+    );
     SendResponse(res, 'Success', users);
   } catch (error) {
     // sendSentryError(error, "assignVaToCampaign");
@@ -66,7 +89,6 @@ export const createUser = async (req, res, next) => {
   var salt = bcrypt.genSaltSync(10);
   var hashpass = bcrypt.hashSync(pass, salt);
   const transaction = await sequelize.transaction();
-  console.log(hashpass)
   try {
     const user = await users.create({
       name,

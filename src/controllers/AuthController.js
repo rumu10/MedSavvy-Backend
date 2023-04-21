@@ -1,10 +1,11 @@
 import bcrypt from "bcryptjs";
-import { equal } from "joi";
+import jwt from "jsonwebtoken";
 import { QueryTypes, Op } from "sequelize";
 import db from "../config/Database";
 import CreateJWT from "../utils/CreateJWT";
 import SendResponse from "../utils/responses/SendResponse";
 import { exec } from "child_process";
+import users from "../models/Users";
 
 
 export const SignInWeb = async (req, res, next) => {
@@ -110,16 +111,71 @@ export const SignInWeb = async (req, res, next) => {
 
 
 export const sendEmail = async (req, res, next) => {
-  exec(`py C:/emailTest/emailer.py passwordResetEmail ${req.body.email} http://localhost:3000/reset-password`, (error, stdout, stderr) => {
-    if (error) {
-      console.log(`error: ${error.message}`);
-      return;
+  const email = req.body.email;
+
+  try {
+    const user = await users.findOne(
+      {
+        where: { email: email }
+      }
+    );
+
+    console.log('sdsd', user);
+
+    if (!user) {
+      const error = new Error("No User found with this email!");
+      error.statusCode = 404;
+      error.flag = true;
+      return next(error);
     }
-    if (stderr) {
-      // console.log(`stderr: ${stderr}`);
-      return;
+
+    req.user = {
+      email
+    };
+    const token = CreateJWT(req.user);
+
+    exec(`py C:/emailTest/emailer.py passwordResetEmail ${req.body.email} http://localhost:3000/reset-password/${token}`, (error, stdout, stderr) => {
+      if (error) {
+        console.log(`error: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        // console.log(`stderr: ${stderr}`);
+        return;
+      }
+      SendResponse(res, 'Success', 'sent');
+    });
+
+
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+
+export const resetPass = async (req, res, next) => {
+  var decodedClaims = jwt.verify(req.body.token, process.env.TokenCode);
+
+  var salt = bcrypt.genSaltSync(10);
+  var hashpass = bcrypt.hashSync(req.body.password, salt);
+
+  try {
+    const user = await users.update({
+      pass: hashpass
+    },
+      {
+        where: { email: decodedClaims.email }
+      }
+    );
+
+    return SendResponse(res, "Successful", 'Success');
+  } catch (error) {
+    console.log(error)
+    if (!error.statusCode) {
+      error.statusCode = 500;
     }
-    SendResponse(res, 'Success', 'sent');
-  });
+    return next(error);
+  }
+
 }
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { accessList, createRole, createUser, deleteUser, getRole, getRoleList, getUser, updateRole, updateUser, userList } from "../controllers/UserController";
+import { accessList, allUserList, createRole, createUser, deleteUser, getRole, getRoleList, getUser, updateRole, updateUser, userList } from "../controllers/UserController";
 import AuthorizedUser from "../middlewares/AuthorizedUser";
 
 
@@ -9,6 +9,7 @@ const router = Router();
 router.use(AuthorizedUser);
 
 router.get('/userList', userList);
+router.get('/all-userList', allUserList);
 router.get('/roleList', getRoleList);
 router.post('/create', createUser);
 router.patch('/delete-user', deleteUser);
